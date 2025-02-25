@@ -1,3 +1,5 @@
+from json import load
+import scipy as sp
 from tensorflow.keras.models import load_model  # type: ignore
 from contextlib import redirect_stdout
 from tkinter import Label, Button
@@ -15,9 +17,6 @@ import io
 # Set the encoding to utf-8
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-sign_path = r"C:\WORKSPACE\DriverAssistX\Model\model_sign.h5"
-hand_path = r"C:\WORKSPACE\DriverAssistX\Model\model_sign.h5"
-
 # Initialize text-to-speech engine
 engine = pyttsx3.init()
 voices = engine.getProperty('voices')
@@ -29,6 +28,14 @@ def speak_text(text):
     engine.say(text)
     engine.runAndWait()
 
+sign_path = r"C:\WORKSPACE\DriverAssistX\Model\model_sign.h5"
+hand_path = r"C:\WORKSPACE\DriverAssistX\Model\model_sign.h5"
+
+# Load the hand classifier model
+def load_hand_classifier():
+    loaded_model = load_model(hand_path)
+    labels = ["Turn Left", "Turn Right", "Stop the Vehicle"]
+    return loaded_model, labels
 # Load the sign classifier model
 def load_sign_classifier():
     loaded_model = tf.keras.models.load_model(sign_path)
@@ -135,8 +142,10 @@ def classify(file_path, model,classes, label):
     result = pred.argmax()
     sign = classes.get(result + 1, "Unknown sign")
     label.config(foreground='#011638',text=sign)
+    speak_text(sign)
+    print(sign)
 
 if __name__ == "__main__":
-    model, classes = load_traffic_classifier()
+    model, classes = load_sign_classifier()
     top, label, sign_image = init_gui()
     top.mainloop()

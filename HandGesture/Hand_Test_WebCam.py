@@ -22,7 +22,6 @@ frameHeight = 480
 brightness = 180
 threshold = 0.75       
 font = cv2.FONT_HERSHEY_SIMPLEX
-
 offset = 20
 imgSize = 224
 
