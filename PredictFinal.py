@@ -1,16 +1,37 @@
-import numpy as np
-import tkinter as tk
-from tkinter import filedialog
+from tensorflow.keras.models import load_model  # type: ignore
+from contextlib import redirect_stdout
 from tkinter import Label, Button
+from tkinter import filedialog
 from PIL import Image, ImageTk
-import cv2
 import tensorflow as tf
+import tkinter as tk
+import numpy as np
+import pyttsx3
+import sys
+import cv2
+import os
+import io
 
+# Set the encoding to utf-8
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-def load_traffic_classifier():
+sign_path = r"C:\WORKSPACE\DriverAssistX\Model\model_sign.h5"
+hand_path = r"C:\WORKSPACE\DriverAssistX\Model\model_sign.h5"
 
-    model_path = r"C:\WORKSPACE\AIML\Project\Docker_fail\Traffic.h5"
-    loaded_model = tf.keras.models.load_model(model_path)
+# Initialize text-to-speech engine
+engine = pyttsx3.init()
+voices = engine.getProperty('voices')
+engine.setProperty('voice', voices[1].id)
+engine.setProperty('rate', 125) 
+engine.setProperty('volume', 1)
+
+def speak_text(text):
+    engine.say(text)
+    engine.runAndWait()
+
+# Load the sign classifier model
+def load_sign_classifier():
+    loaded_model = tf.keras.models.load_model(sign_path)
     classes = {
         1: 'Speed limit (20km/h)',
         2: 'Speed limit (30km/h)',
@@ -57,6 +78,7 @@ def load_traffic_classifier():
         43: 'End no passing vehicle over 3.5 tons'
     }
     return loaded_model, classes
+
 
 def init_gui():
     top = tk.Tk()

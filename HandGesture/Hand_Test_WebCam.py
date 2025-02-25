@@ -14,7 +14,7 @@ warnings.filterwarnings('ignore', category=UserWarning, module='keras')
 cap = cv2.VideoCapture(0)
 detector = HandDetector(maxHands=1)
 
-path = r"C:\WORKSPACE\AIML\Project\HandSign\Model\keras_model.h5"
+path = r"C:\WORKSPACE\DriverAssistX\HandGesture\Model\model_final.h5"
 model = load_model(path)
 print(model.input_shape)
 frameWidth = 640    
