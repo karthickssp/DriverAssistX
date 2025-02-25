@@ -8,13 +8,8 @@ import tkinter as tk
 import numpy as np
 import pyttsx3
 import math
-import sys
 import cv2
-import os
-import io
 
-# Set the encoding to utf-8
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 # Initialize text-to-speech engine
 engine = pyttsx3.init()
@@ -31,12 +26,12 @@ def speak_text(text):
 detector = HandDetector(maxHands=1)
 
 # Constants
-imgSize = 30
+imgSize = 224
 offset = 20
 threshold = 0.75
 
 sign_path = r"C:\WORKSPACE\DriverAssistX\Model\model_sign.h5"
-hand_path = r"C:\WORKSPACE\DriverAssistX\Model\model_sign.h5"
+hand_path = r"C:\WORKSPACE\DriverAssistX\Model\model_hand.h5"
 
 # Load the hand classifier model
 def load_hand_classifier():
