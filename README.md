@@ -58,9 +58,9 @@ DriverAssistX/
 
 ## Future Enhancements
 
-✅ Improve model accuracy with more training data.
-✅ Implement a mobile application version.
-✅ Support additional traffic rules and hand gestures.
+-✅ Improve model accuracy with more training data.
+-✅ Implement a mobile application version.
+-✅ Support additional traffic rules and hand gestures.
 
 ## Contributors
 Karthick ([karthickssp00@gmail.com](mailto:karthickssp00@gmail.com))
