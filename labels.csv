@@ -1,0 +1,71 @@
+ClassId,Name
+0,Speed limit (20km/h)
+1,Speed limit (30km/h)
+2,Speed limit (40km/h)
+3,Speed limit (50km/h)
+4,Speed limit (60km/h)
+5,Speed limit (70km/h)
+6,Speed limit (80km/h)
+7,End of speed limit (80km/h)
+8,Speed limit (100km/h)
+9,Speed limit (120km/h)
+10,No Overtaking of vehicles
+11,No passing for vehicles over 3.5 metric tons
+12,Give Way
+13,No Way for Vehicles
+14,Stop the Vehicles
+15,No Entry
+16,U-turn Prohibited
+17,Turn Right Prohibited
+18,Turn Left Prohibited
+19,Horns Prohibited
+20,Over Taking Prohibited
+21,Compulsory Turn Left
+22,Compulsory Turn Right Ahead
+23,Compulsory Ahead Only
+24,Compulsory Ahead or Turn Right
+25,Compulsory Ahead or Turn Left
+26,Compulsory Keep Left
+27,Compulsory Keep Right
+28,Compulsory Sound Horn
+29,Right Hand Curve
+30,Left Hand Curve
+31,Right Hair Pin Bend
+32,Left Hair Pin Bend
+33,Right Reverse Bend
+34,Left Reverse Bend
+35,Steep Ascent
+36,Steep Descent
+37,Narrow Road Ahead
+38,Road Widens Ahead
+39,Narrow Bridge
+40,Slippery Road
+41,Loose Gravels
+42,Pedestrian Crossing
+43,School Ahead
+44,Man At Work
+45,Cross Road
+46,Gap in Median
+47,Side Road Right
+48,Side Road Left
+49,Y - Inter Section
+50,Y - Inter Section
+51,Major Road Ahead
+52,Staggered Intersection
+53,Major Road Ahead
+54,Round About
+55,Dangerous DIP
+56,Rough Road
+57,Bicycles Crossing
+58,Wild Animals Crossing
+59,Beware of ice/snow
+60,Priority road 
+61,Right-of-way at the next intersection
+62,No passing for vehicles over 3.5 metric tons
+63,General Caution
+64,No Entry
+65,End of all speed and passing limits
+66,Traffic Signals
+67,Stop the Vehicles
+68,Turn Right
+69,Turn Left

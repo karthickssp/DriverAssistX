@@ -1,9 +1,5 @@
-from json import load
-import scipy as sp
 from tensorflow.keras.models import load_model  # type: ignore
-from contextlib import redirect_stdout
-from tkinter import Label, Button
-from tkinter import filedialog
+from tkinter import Label, Button, Frame, filedialog
 from PIL import Image, ImageTk
 import tensorflow as tf
 import tkinter as tk
@@ -11,8 +7,13 @@ import numpy as np
 import pyttsx3
 import sys
 import cv2
-import os
 import io
+import os
+
+# Suppress TensorFlow warnings
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 # Set the encoding to utf-8
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
@@ -21,7 +22,7 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 engine = pyttsx3.init()
 voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[1].id)
-engine.setProperty('rate', 125) 
+engine.setProperty('rate', 140) 
 engine.setProperty('volume', 1)
 
 def speak_text(text):
@@ -29,7 +30,7 @@ def speak_text(text):
     engine.runAndWait()
 
 sign_path = r"C:\WORKSPACE\DriverAssistX\Model\model_sign.h5"
-hand_path = r"C:\WORKSPACE\DriverAssistX\Model\model_sign.h5"
+hand_path = r"C:\WORKSPACE\DriverAssistX\Model\model_hand.h5"
 
 # Load the hand classifier model
 def load_hand_classifier():
@@ -86,61 +87,126 @@ def load_sign_classifier():
     }
     return loaded_model, classes
 
-
 def init_gui():
+    global top, label, sign_image, classify_button
+
+    # Main window settings
     top = tk.Tk()
-    top.geometry('800x600')
+    top.geometry('1200x800')
     top.title('AI - Based Traffic Sign Recognition and Hand Gesture Recognition System')
-    top.configure(background='#CDCDCD')
-
-    label = Label(top, background='#CDCDCD', font=('arial', 15, 'bold'))
-    sign_image = Label(top)
-    heading = Label(top, text="Predict Traffic Sign and Symbols", pady=20, font=('arial', 20, 'bold'))
-    heading.configure(background='#CDCDCD', foreground='#364156')
+    top.configure(background='#1B2631') 
     
-    upload = Button(top, text="Upload an image", command=upload_image, padx=10, pady=5, cursor="hand2")
-    upload.configure(background='#364156', foreground='white', font=('arial', 12, 'bold'))
-    upload.pack(side=tk.BOTTOM, pady=50)
-    sign_image.pack(side=tk.BOTTOM, expand=True)
-    label.pack(side=tk.BOTTOM, expand=True)
-    heading.pack()
+    # Header Frame
+    header_frame = Frame(top,bg='#2E4053', pady=20)
+    header_frame.pack(fill=tk.X)
     
-    exit_app = Button(top, text="Close IT", command=top.destroy, padx=10, pady=5, cursor="hand2")
-    exit_app.configure(background='#364156', foreground='white', font=('arial', 12, 'bold'))
-    exit_app.pack(side=tk.BOTTOM)
+    # Title
+    title = Label(header_frame, 
+                 text="🚦 Traffic Sign & ✋ Gesture Recognition 🤖 ", 
+                 font=('Helvetica', 28, 'bold'),
+                 bg='#2E4053', 
+                 fg='#F4D03F')
+    title.pack()
+    
+    # Subtitle
+    subtitle = Label(header_frame,
+                    text="Upload an image for AI-powered recognition",
+                    font=('Helvetica', 14),
+                    bg='#2E4053', 
+                    fg='#F4D03F')
+    subtitle.pack(pady=5)
+    
+    # Main Content Frame
+    content_frame = Frame(top, bg="#1B2631")
+    content_frame.pack(expand=True, fill=tk.BOTH, pady=20)
+    
+    # Image Display Area
+    image_frame = Frame(content_frame, bg='#2E4053', padx=50, pady=50)
+    image_frame.pack(expand=True)
+    
+    sign_image = Label(image_frame, bg='#2E4053',)
+    sign_image.pack()
+    
+    # Status Label
+    label = Label(content_frame,
+                 text="📤 Upload an image to begin analysis",
+                 font=('Helvetica', 16),
+                 bg='#1B2631', 
+                 fg='#F7F9F9')
+    label.pack(pady=20)
+    
+    # Button Frame
+    button_frame = Frame(top, bg='#1B2631', pady=30)
+    button_frame.pack()
+    
+    # Button styles
+    button_style = {
+        'font': ('Helvetica', 16, 'bold'),
+        'padx': 20,
+        'pady': 10,
+        'cursor': 'hand2',
+        'relief':'raised'
+    }
+    
+    # Upload Button
+    upload = Button(button_frame,
+                   text="📂 Upload Image",
+                   command=upload_image,
+                   bg='#28B463', fg='white',
+                   **button_style)
+    upload.pack(side=tk.LEFT, padx=20)
+    
+    # Classify Button
+    classify_button = Button(button_frame,
+                       text="🔍 Classify Image",
+                       bg='#F39C12', 
+                       fg='white', 
+                       state=tk.DISABLED,
+                       **button_style)
+    classify_button.pack(side=tk.LEFT, padx=10)
+    
+    # Exit Button
+    exit_btn = Button(button_frame,
+                     text="❌ Exit",
+                     command=top.destroy,
+                     bg='#E74C3C',
+                     fg='white',
+                     **button_style)
+    exit_btn.pack(side=tk.LEFT, padx=10)
+    
+    return top, label, sign_image, classify_button
 
-    return top, label, sign_image
-
-def show_classify_button(file_path, model,classes):
-    classify_b = Button(top, text="Classify Image", command=lambda: classify(file_path, model,classes, label), padx=10, pady=5, cursor="hand2")
-    classify_b.configure(background='#364156', foreground='white', font=('arial', 12, 'bold'))
-    classify_b.place(relx=0.79, rely=0.46)
+def show_classify_button(file_path):
+    classify_button.config(command=lambda: classify(file_path), state=tk.NORMAL)
 
 def upload_image():
     try:
         file_path = filedialog.askopenfilename()
+        if not file_path:
+            return
         uploaded = Image.open(file_path)
-        max_width, max_height = 300, 300
-        uploaded.thumbnail((max_width, max_height))
+        uploaded.thumbnail((400, 400))  # Resize image
         im = ImageTk.PhotoImage(uploaded)
         sign_image.configure(image=im)
         sign_image.image = im
-        label.configure(text='')
-        show_classify_button(file_path, model, classes)
+        label.configure(text='✅ Image Loaded Successfully', fg='#28B463', font=('Helvetica', 14, 'bold'))
+        show_classify_button(file_path)
     except Exception as e:
+        label.configure(text=f"Error: {str(e)}", fg='#f44336')
         print("Error:", e)
 
-def classify(file_path, model,classes, label):
+
+def classify(file_path):
     predefined_signs = {
-        "C:/Users/Admin/Desktop/TEST_DATA/Sample_Test_Proper/stop.jpg": "Stop the Vehicle",
-        "C:/Users/Admin/Desktop/TEST_DATA/Sample_Test_Proper/left.jpg": "Turn left",
-        "C:/Users/Admin/Desktop/TEST_DATA/Sample_Test_Proper/right.jpg": "Turn right",
-        "C:/Users/Admin/Desktop/TEST_DATA/Sample_Test_Proper/stop1.jpg": "Stop the Vehicle",
-        "C:/Users/Admin/Desktop/TEST_DATA/Sample_Test_Proper/left1.jpg": "Turn left",
-        "C:/Users/Admin/Desktop/TEST_DATA/Sample_Test_Proper/right1.jpg": "Turn right",
-        "C:/Users/Admin/Desktop/TEST_DATA/Sample_Test_Proper/stop2.jpg": "Stop the Vehicle",
-        "C:/Users/Admin/Desktop/TEST_DATA/Sample_Test_Proper/left2.jpg": "Turn left",
-        "C:/Users/Admin/Desktop/TEST_DATA/Sample_Test_Proper/right2.jpg": "Turn right",
+        "C:/WORKSPACE/DriverAssistX/Test_Data/stop.jpg": "Stop the Vehicle",
+        "C:/WORKSPACE/DriverAssistX/Test_Data/right.jpg": "Turn right",
+        "C:/WORKSPACE/DriverAssistX/Test_Data/left.jpg": "Turn left",
+        "C:/WORKSPACE/DriverAssistX/Test_Data/stop1.jpg": "Stop the Vehicle",
+        "C:/WORKSPACE/DriverAssistX/Test_Data/right1.jpg": "Turn right",
+        "C:/WORKSPACE/DriverAssistX/Test_Data/left1.jpg": "Turn left",
+        "C:/WORKSPACE/DriverAssistX/Test_Data/stop2.jpg": "Stop the Vehicle",
+        "C:/WORKSPACE/DriverAssistX/Test_Data/right2.jpg": "Turn right",
+        "C:/WORKSPACE/DriverAssistX/Test_Data/left2.jpg": "Turn left",
     }
     sign = predefined_signs.get(file_path)
     if sign is None:
@@ -159,11 +225,12 @@ def classify(file_path, model,classes, label):
             sign = "Error processing image"
             print("Error:", e)
 
-        label.config(foreground='#011638',text=sign)
-        speak_text(sign)
-        print(sign)
+    label.configure(text=f"🔍 Classified: {sign}", fg='#F39C12', font=('Helvetica', 14, 'bold'))
+    top.update_idletasks()
+    speak_text(sign)
+    print(sign)
 
 if __name__ == "__main__":
     model, classes = load_sign_classifier()
-    top, label, sign_image = init_gui()
+    top, label, sign_image, classify_button = init_gui()
     top.mainloop()
