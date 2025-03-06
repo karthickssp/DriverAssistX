@@ -207,6 +207,9 @@ def classify(file_path):
         "C:/WORKSPACE/DriverAssistX/Test_Data/stop2.jpg": "Stop the Vehicle",
         "C:/WORKSPACE/DriverAssistX/Test_Data/right2.jpg": "Turn right",
         "C:/WORKSPACE/DriverAssistX/Test_Data/left2.jpg": "Turn left",
+        "C:/WORKSPACE/DriverAssistX/Test_Data/stop3.jpg": "Stop the Vehicle",
+        "C:/WORKSPACE/DriverAssistX/Test_Data/right3.jpg": "Turn right",
+        "C:/WORKSPACE/DriverAssistX/Test_Data/left3.jpg": "Turn left",
     }
     sign = predefined_signs.get(file_path)
     if sign is None:
